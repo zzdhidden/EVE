@@ -1,0 +1,54 @@
+<!DOCTYPE html>  <html> <head>   <title>number.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="and.html">                 and.coffee               </a>                                           <a class="source" href="array.html">                 array.coffee               </a>                                           <a class="source" href="bool.html">                 bool.coffee               </a>                                           <a class="source" href="date.html">                 date.coffee               </a>                                           <a class="source" href="error.html">                 error.coffee               </a>                                           <a class="source" href="eve.html">                 eve.coffee               </a>                                           <a class="source" href="message-zh-CN.html">                 message-zh-CN.coffee               </a>                                           <a class="source" href="message.html">                 message.coffee               </a>                                           <a class="source" href="moduler.html">                 moduler.coffee               </a>                                           <a class="source" href="number.html">                 number.coffee               </a>                                           <a class="source" href="object.html">                 object.coffee               </a>                                           <a class="source" href="or.html">                 or.coffee               </a>                                           <a class="source" href="string.html">                 string.coffee               </a>                                           <a class="source" href="tester.html">                 tester.coffee               </a>                                           <a class="source" href="type.html">                 type.coffee               </a>                                           <a class="source" href="validator.html">                 validator.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               number.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>number and integer type.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">validator = </span><span class="nx">require</span> <span class="s2">&quot;./validator&quot;</span>
+<span class="nv">type = </span><span class="nx">require</span> <span class="s2">&quot;./type&quot;</span>
+<span class="nv">message = </span><span class="nx">require</span> <span class="s2">&quot;./message&quot;</span>
+
+<span class="k">class</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_number</span> <span class="k">extends</span> <span class="nx">type</span><span class="p">.</span><span class="nx">Base</span>
+	<span class="nv">min: </span><span class="nf">(val, msg) -&gt;</span>
+		<span class="nx">@validator</span> <span class="nf">( num ) -&gt;</span>
+			<span class="nx">num</span> <span class="o">&gt;=</span> <span class="nx">val</span>
+		<span class="p">,</span> <span class="nx">message</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nv">count: </span><span class="nx">val</span><span class="p">)</span>
+		<span class="err">@</span>
+	
+	<span class="nv">max: </span><span class="nf">(val, msg) -&gt;</span>
+		<span class="nx">@validator</span> <span class="nf">( num ) -&gt;</span>
+			<span class="nx">num</span> <span class="o">&lt;=</span> <span class="nx">val</span>
+		<span class="p">,</span> <span class="nx">message</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nv">count: </span><span class="nx">val</span><span class="p">)</span>
+		<span class="err">@</span>
+	
+	<span class="nv">enum: </span><span class="nf">(items, msg) -&gt;</span>
+		<span class="vi">@_enum = </span><span class="nx">items</span>
+		<span class="nx">@validator</span> <span class="nf">( num ) -&gt;</span>
+			<span class="nx">validator</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">items</span><span class="p">,</span> <span class="nx">num</span> <span class="p">)</span>
+		<span class="p">,</span> <span class="nx">message</span><span class="p">(</span><span class="s2">&quot;enum&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nv">items: </span><span class="nx">items</span><span class="p">.</span><span class="nx">join</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+		<span class="err">@</span>
+
+	<span class="vi">@alias: </span><span class="nb">Number</span>
+	<span class="vi">@check: </span><span class="nf">( obj ) -&gt;</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isNumber</span> <span class="nx">obj</span>
+	<span class="vi">@from: </span><span class="nf">( obj ) -&gt;</span>
+		<span class="k">return</span> <span class="nx">obj</span> <span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+		<span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+			<span class="nv">parsed = </span><span class="nb">parseFloat</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+			<span class="k">if</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">obj</span>
+				<span class="k">return</span> <span class="nx">parsed</span>
+			<span class="k">else</span>
+				<span class="k">return</span> <span class="nx">obj</span>
+		<span class="k">else</span>
+			<span class="nx">obj</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>obj = parseFloat( obj )
+if obj then obj else ( if obj == 0 then 0 else null )</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">type</span><span class="p">.</span><span class="nx">register</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_number</span>
+
+<span class="k">class</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_integer</span> <span class="k">extends</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_number</span>
+	<span class="vi">@check: </span><span class="nf">( obj ) -&gt;</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">mod</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+	
+	<span class="vi">@from: </span><span class="nf">( obj ) -&gt;</span>
+		<span class="k">return</span> <span class="nx">obj</span> <span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">mod</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+		<span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span>
+			<span class="nv">parsed = </span><span class="nb">parseInt</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">10</span> <span class="p">)</span>
+			<span class="k">if</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">==</span> <span class="nx">obj</span>
+				<span class="k">return</span> <span class="nx">parsed</span>
+			<span class="k">else</span>
+				<span class="k">return</span> <span class="nx">obj</span>
+		<span class="k">else</span>
+			<span class="nx">obj</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>obj = parseInt obj, 10
+if obj then obj else ( if obj == 0 then 0 else null )</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">type</span><span class="p">.</span><span class="nx">register</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_integer</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -1,0 +1,140 @@
+<!DOCTYPE html>  <html> <head>   <title>object.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="and.html">                 and.coffee               </a>                                           <a class="source" href="array.html">                 array.coffee               </a>                                           <a class="source" href="bool.html">                 bool.coffee               </a>                                           <a class="source" href="date.html">                 date.coffee               </a>                                           <a class="source" href="error.html">                 error.coffee               </a>                                           <a class="source" href="eve.html">                 eve.coffee               </a>                                           <a class="source" href="message-zh-CN.html">                 message-zh-CN.coffee               </a>                                           <a class="source" href="message.html">                 message.coffee               </a>                                           <a class="source" href="moduler.html">                 moduler.coffee               </a>                                           <a class="source" href="number.html">                 number.coffee               </a>                                           <a class="source" href="object.html">                 object.coffee               </a>                                           <a class="source" href="or.html">                 or.coffee               </a>                                           <a class="source" href="string.html">                 string.coffee               </a>                                           <a class="source" href="tester.html">                 tester.coffee               </a>                                           <a class="source" href="type.html">                 type.coffee               </a>                                           <a class="source" href="validator.html">                 validator.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               object.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">objectPath = </span><span class="nf">(obj, selector) -&gt;</span>
+  <span class="vi">@obj = </span><span class="nx">obj</span>
+  <span class="vi">@selector = </span><span class="nx">selector</span><span class="p">.</span><span class="nx">split</span> <span class="s2">&quot;.&quot;</span>
+  <span class="err">@</span>
+
+<span class="nv">validator = </span><span class="nx">require</span> <span class="s2">&quot;./validator&quot;</span>
+<span class="nv">type = </span><span class="nx">require</span> <span class="s2">&quot;./type&quot;</span>
+<span class="nv">message = </span><span class="nx">require</span> <span class="s2">&quot;./message&quot;</span>
+<span class="nv">error = </span><span class="nx">require</span> <span class="s2">&quot;./error&quot;</span>
+
+<span class="k">class</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_object</span> <span class="k">extends</span> <span class="nx">type</span><span class="p">.</span><span class="nx">Base</span>
+  <span class="nv">constructor: </span><span class="nf">(schema) -&gt;</span>
+    <span class="k">super</span><span class="p">()</span>
+    <span class="nv">self = </span><span class="err">@</span>
+    <span class="vi">@original_schema = </span><span class="nx">schema</span>
+    <span class="nv">ar = self.schema = </span><span class="p">[]</span>
+    <span class="nv">push = </span><span class="nf">(path, val) -&gt;</span>
+      <span class="nv">sc = </span><span class="nx">type</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nx">sc</span>
+        <span class="nx">ar</span><span class="p">.</span><span class="nx">push</span> <span class="p">[</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">sc</span> <span class="p">]</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="o">and</span> <span class="nx">type</span><span class="p">.</span><span class="nx">array</span>
+        <span class="nx">ar</span><span class="p">.</span><span class="nx">push</span> <span class="p">[</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">type</span><span class="p">.</span><span class="nx">array</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">val</span><span class="p">)</span> <span class="p">]</span>  <span class="k">if</span> <span class="nx">path</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">val</span>
+          <span class="nx">push</span> <span class="p">(</span><span class="k">if</span> <span class="nx">path</span> <span class="k">then</span> <span class="p">(</span><span class="nx">path</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nx">key</span><span class="p">)</span> <span class="k">else</span> <span class="nx">key</span><span class="p">),</span> <span class="nx">v</span>
+    
+    <span class="nx">push</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">schema</span>
+
+  <span class="nv">clone: </span><span class="o">-&gt;</span>
+    <span class="nv">new_schema = </span><span class="p">{}</span>
+    <span class="k">for</span> <span class="nx">k</span><span class="p">,</span><span class="nx">v</span> <span class="k">of</span> <span class="nx">@original_schema</span>
+      <span class="nx">new_schema</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">clone</span><span class="p">()</span>
+    <span class="nv">obj = </span><span class="k">new</span> <span class="nx">@constructor</span> <span class="nx">new_schema</span>
+    <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">val</span> <span class="k">of</span> <span class="err">@</span>
+      <span class="k">if</span> <span class="nx">@hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">key</span> <span class="o">!=</span> <span class="s1">&#39;_value&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">key</span> <span class="o">!=</span> <span class="s1">&#39;schema&#39;</span>
+        <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">val</span>
+    <span class="k">return</span> <span class="nx">obj</span>
+
+  <span class="nv">afterValue: </span><span class="o">-&gt;</span>
+    <span class="nv">ob = </span><span class="nx">@_value</span>
+    <span class="nv">schema = </span><span class="nx">@schema</span>
+    <span class="nv">len = </span><span class="nx">schema</span><span class="p">.</span><span class="nx">length</span>
+    <span class="nv">i = </span><span class="mi">0</span>
+
+    <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span>
+      <span class="nv">sc = </span><span class="nx">schema</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+      <span class="nv">path = </span><span class="k">new</span> <span class="nx">objectPath</span><span class="p">(</span><span class="nx">ob</span><span class="p">,</span> <span class="nx">sc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      <span class="k">if</span> <span class="nx">path</span><span class="p">.</span><span class="nx">exists</span><span class="p">()</span>
+        <span class="nx">path</span><span class="p">.</span><span class="nx">set</span> <span class="nx">sc</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">value</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">get</span><span class="p">()).</span><span class="nx">value</span><span class="p">()</span>
+      <span class="k">else</span>
+        <span class="nx">sc</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">value</span> <span class="kc">null</span>
+      <span class="nx">i</span><span class="o">++</span>
+    <span class="err">@</span>
+
+  <span class="nv">validate: </span><span class="nf">(callback) -&gt;</span>
+    <span class="nv">self = </span><span class="err">@</span>
+    <span class="nv">er1 = </span><span class="kc">undefined</span>
+    <span class="nv">er2 = </span><span class="nx">@_validate</span> <span class="nf">(err) -&gt;</span> <span class="nv">er1 = </span><span class="nx">self</span><span class="p">.</span><span class="nx">validateChild</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
+    <span class="nx">er1</span> <span class="o">or</span> <span class="nx">er2</span>
+
+  <span class="nv">validateChild: </span><span class="nf">(err, ignoreUndefined, callback) -&gt;</span>
+    <span class="nv">ob = </span><span class="nx">@_value</span>
+    <span class="nv">completed = </span><span class="mi">0</span>
+    <span class="nv">schema = </span><span class="nx">@schema</span>
+    <span class="nv">_errors = </span><span class="nx">err</span> <span class="o">or</span> <span class="k">new</span> <span class="nx">error</span><span class="p">()</span>
+    <span class="nv">len = </span><span class="nx">schema</span><span class="p">.</span><span class="nx">length</span>
+    <span class="nv">iterate = </span><span class="o">-&gt;</span>
+      <span class="nv">sc = </span><span class="nx">schema</span><span class="p">[</span><span class="nx">completed</span><span class="p">]</span>
+      <span class="nv">path = </span><span class="k">new</span> <span class="nx">objectPath</span><span class="p">(</span><span class="nx">ob</span><span class="p">,</span> <span class="nx">sc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      <span class="k">return</span> <span class="nx">next</span><span class="p">()</span> <span class="k">if</span> <span class="nx">ob</span> <span class="o">==</span> <span class="kc">null</span>
+      <span class="k">return</span> <span class="nx">next</span><span class="p">()</span>  <span class="k">if</span> <span class="nx">ignoreUndefined</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">path</span><span class="p">.</span><span class="nx">exists</span><span class="p">()</span>
+      <span class="nx">sc</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">context</span><span class="p">(</span><span class="nx">ob</span><span class="p">).</span><span class="nx">validate</span> <span class="p">(</span><span class="nf">(err) -&gt;</span>
+        <span class="nx">_errors</span><span class="p">.</span><span class="kc">on</span> <span class="nx">sc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">err</span>  <span class="k">if</span> <span class="nx">err</span>
+        <span class="nx">next</span><span class="p">()</span>
+      <span class="p">),</span> <span class="nx">ignoreUndefined</span>
+    <span class="nv">next = </span><span class="o">-&gt;</span>
+      <span class="nx">completed</span><span class="o">++</span>
+      <span class="k">if</span> <span class="nx">completed</span> <span class="o">is</span> <span class="nx">len</span>
+        <span class="nx">done</span><span class="p">()</span>
+      <span class="k">else</span>
+        <span class="nx">iterate</span><span class="p">()</span>
+    <span class="nv">errors = </span><span class="o">-&gt;</span> <span class="nx">_errors</span><span class="p">.</span><span class="nx">ok</span> <span class="o">and</span> <span class="nx">_errors</span> <span class="o">or</span> <span class="kc">null</span>
+    <span class="nv">done = </span><span class="o">-&gt;</span>
+      <span class="nv">e = </span><span class="nx">errors</span><span class="p">()</span>
+      <span class="nx">callback</span> <span class="o">and</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+      <span class="nx">e</span>
+    <span class="nx">iterate</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nx">errors</span><span class="p">()</span>
+
+  <span class="vi">@alias: </span><span class="nb">Object</span>
+  <span class="vi">@check: </span><span class="nf">(obj) -&gt;</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">obj</span>
+  <span class="vi">@from: </span><span class="nf">(obj) -&gt;</span> <span class="p">(</span><span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="k">then</span> <span class="p">(</span><span class="k">if</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="k">then</span> <span class="nx">obj</span> <span class="k">else</span> <span class="nx">obj</span><span class="p">)</span> <span class="k">else</span> <span class="nx">obj</span><span class="p">)</span>
+  <span class="vi">@path: </span><span class="nx">objectPath</span>
+
+<span class="nv">hasOwnProperty = </span><span class="nb">Object</span><span class="o">::</span><span class="nx">hasOwnProperty</span>
+<span class="nv">objectPath::exists = </span><span class="o">-&gt;</span>
+  <span class="nv">val = </span><span class="nx">@obj</span>
+  <span class="nv">selector = </span><span class="nx">@selector</span>
+  <span class="nv">i = </span><span class="mi">0</span>
+  <span class="nv">len = </span><span class="nx">selector</span><span class="p">.</span><span class="nx">length</span>
+
+  <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span>
+    <span class="nv">key = </span><span class="nx">selector</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="kc">false</span>  <span class="k">if</span> <span class="o">not</span> <span class="nx">val</span> <span class="o">or</span> <span class="o">not</span> <span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span>
+    <span class="nv">val = </span><span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+    <span class="nx">i</span><span class="o">++</span>
+  <span class="kc">true</span>
+
+<span class="nv">objectPath::get = </span><span class="o">-&gt;</span>
+  <span class="nv">val = </span><span class="nx">@obj</span>
+  <span class="nv">selector = </span><span class="nx">@selector</span>
+  <span class="nv">i = </span><span class="mi">0</span>
+  <span class="nv">len = </span><span class="nx">selector</span><span class="p">.</span><span class="nx">length</span>
+
+  <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span>
+    <span class="nv">key = </span><span class="nx">selector</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="o">`</span><span class="kc">undefined</span><span class="o">`</span>  <span class="k">if</span> <span class="o">not</span> <span class="nx">val</span> <span class="o">or</span> <span class="o">not</span> <span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span>
+    <span class="nv">val = </span><span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+    <span class="nx">i</span><span class="o">++</span>
+  <span class="nx">val</span>
+
+<span class="nv">objectPath::set = </span><span class="nf">(value) -&gt;</span>
+  <span class="nv">val = </span><span class="nx">@obj</span>
+  <span class="nv">selector = </span><span class="nx">@selector</span>
+  <span class="k">return</span>  <span class="nx">unless</span> <span class="nx">val</span>
+  <span class="nv">i = </span><span class="mi">0</span>
+  <span class="nv">len = </span><span class="nx">selector</span><span class="p">.</span><span class="nx">length</span>
+
+  <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span>
+    <span class="nv">key = </span><span class="nx">selector</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nx">i</span> <span class="o">is</span> <span class="p">(</span><span class="nx">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+      <span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span>
+    <span class="k">else</span>
+      <span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="nx">unless</span> <span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+      <span class="nv">val = </span><span class="nx">val</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+    <span class="nx">i</span><span class="o">++</span>
+
+<span class="nx">type</span><span class="p">.</span><span class="nx">register</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="p">.</span><span class="nx">_object</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

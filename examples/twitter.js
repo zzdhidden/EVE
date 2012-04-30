@@ -1,28 +1,25 @@
-/**
- *
- * Get twitter statuses and then automatic convert date string to date type
- *
- */
+(function() {
+  var eve, statusSchema, statuses, type;
 
-var eve = require("../index.js")
-	, type = eve.type
-	, statuses = require("./fixtures/public_timeline.json");
+  eve = require("../index");
 
-var statusSchema = type.object({
-	created_at: 
-		type.date() 
-	, user: {
-		"profile_link_color": 
-			type.string()
-		, "created_at": 
-			type.date()
-	}
-});
+  type = eve.type;
 
+  statuses = require("./fixtures/public_timeline.json");
 
-statuses = type.array( statusSchema ).val( statuses ).val();
+  statusSchema = type.object({
+    created_at: type.date(),
+    user: {
+      "profile_link_color": type.string(),
+      "created_at": type.date()
+    }
+  });
 
-statuses.forEach( function( status ) {
-	console.log( typeof status.created_at );
-} );
+  statuses = type.array(statusSchema).val(statuses).val();
 
+  statuses.forEach(function(status) {
+    console.log(status.created_at + " " + status.text.slice(0, 21));
+    return console.log(status.created_at.constructor);
+  });
+
+}).call(this);
