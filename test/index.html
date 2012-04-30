@@ -1,19 +1,22 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<meta content="text/html; charset=UTF-8" http-equiv="content-type">
-		<title>JSchema Test Suite</title>
-		<script type="text/javascript" src="../lib/eve.js"></script>
-
-		<link rel="stylesheet" href="./qunit/qunit.css" type="text/css" media="screen">
-		<script type="text/javascript" src="./qunit/qunit.js"></script>
-		<script type="text/javascript" src="./validator.test.js"></script>
-	</head>
-	<body>
-		<h1 id="qunit-header">JSchema Test Suite</h1>
-		<h2 id="qunit-banner"></h2>
-		<div id="qunit-testrunner-toolbar"></div>
-		<h2 id="qunit-userAgent"></h2>
-		<ol id="qunit-tests"></ol>
-	</body>
+<head>
+  <meta charset="utf-8">
+  <title>EVE Tests (Browser)</title>
+  <link rel="stylesheet" href="/test/browser/mocha.css" />
+  <script src="/test/browser/jquery-1.7.2.js"></script>
+  <script src="/test/browser/mocha.js"></script>
+  <script src="/test/browser/chai.js"></script>  
+  <script>
+  	mocha.setup('bdd');  	
+  </script>
+  <script src="/test/browser/browserify.js"></script>
+  <script>
+    $(function(){
+      mocha.run();
+    })
+  </script>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
 </html>

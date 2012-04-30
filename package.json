@@ -1,14 +1,19 @@
 {
 	"name": "EVE"
-	, "version": "0.0.5"
+	, "private": true
+	, "version": "0.0.5-metakeule"
 	, "description": "A JavaScript object schema, processor and validation lib."
 	, "keywords": ["schema", "process", "validate"]
 	, "author": "Hidden <zzdhidden@gmail.com>"
 	, "dependencies": {}
 	, "devDependencies": { 
-		"mocha": "*"
+			"mocha": "*"
+		, "chai": "*"
+		, "browserify": "*"
+		, "node-static": "*"
+		, "coffee-script": ">=1.1.1"
 	}
 	, "main": "index"
 	, "engines": { "node": ">=0.4.x" }
-	, "repository" : { "type" :  "git", "url" : "http://github.com/zzdhidden/EVE.git" }
+	, "repository" : { "type" :  "git", "url" : "http://github.com/metakeule/EVE.git" }
 }

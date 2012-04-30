@@ -40,6 +40,11 @@ A JavaScript object schema, processor and validation lib.
 			type.integer()
 	});
 
+Run 
+
+	cake browser-tests
+
+to build and serve the browser tests.
 
 ## License 
 
